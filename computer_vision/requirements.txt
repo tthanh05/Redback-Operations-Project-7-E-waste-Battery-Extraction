@@ -1,0 +1,26 @@
+# Core Deep Learning
+torch>=2.0.0
+torchvision>=0.15.0
+
+# YOLO
+ultralytics>=8.0.0
+
+# Computer Vision
+opencv-python
+
+# Data handling
+numpy
+pandas
+matplotlib
+seaborn
+
+# Utilities
+pyyaml
+tqdm
+scikit-learn
+
+# Image processing
+Pillow
+
+# Optional (for augmentation / advanced)
+albumentations

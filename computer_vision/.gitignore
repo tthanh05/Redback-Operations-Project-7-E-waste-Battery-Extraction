@@ -1,0 +1,20 @@
+# Dataset (DO NOT upload full dataset)
+dataset/full/
+
+# Training outputs
+runs/
+results/raw/
+.mp4
+
+# Models
+*.pt
+*.pth
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environment
+venv/
+.env
+
