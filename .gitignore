@@ -1,0 +1,35 @@
+# Datasets and private files
+data/
+dataset/
+datasets/
+images/
+labels/
+*.zip
+*.rar
+*.7z
+
+# Model weights and exported models
+*.pt
+*.pth
+*.ckpt
+*.h5
+*.onnx
+*.engine
+
+# Outputs / training runs
+runs/
+outputs/
+checkpoints/
+weights/
+*.mp4
+*.avi
+
+# Python / notebook cache
+__pycache__/
+.ipynb_checkpoints/
+*.pyc
+
+# Environments
+.env
+.venv/
+venv/
