@@ -1,0 +1,29 @@
+These are the instructions for how to introduce a new phone insides into the blender synthetic data generator.
+All references in the instructions are to the Kaggle link found in README.md or here: https://kaggle.com/datasets/194493c168f0991e41f0ef11a219c7e3a95221047bf8a70a6b67295c98ffd0d0
+This is where all blender files are held and where you can find reference images for the instuctions that will have highlighted boxes for all important buttons/panels
+
+1. Open the blender file (as of writing stored on the OneDrive in the link above) and make sure in the scripting tab that the sript is there, if not, copy the raw text from blenderGenerationScript.py in the same branch as this .txt
+
+2. Go back to the layout tab, here we will be importing the new phone insides
+        Look to the top right of the screen and there should be a list of all objects currently in the environment, you should note that there are two important collections named "PhoneInsides" and "Border"
+        These two collections hold all the completed phone inside image mesh planes and the relative borders to each of them, take note of the naming conventions
+
+3. From second tool bar (below the primary one with file, render, edit, etc.) click;
+        Add -> Image -> Mesh Plane...
+        
+4. A window will popup, navigate to the phoneInsides folder (within the OneDrive as of writing) to select the new phone insides to be placed in the environment
+
+5. Now move the newly inserted mesh plane into the collection group "PhoneInsides" (in the object list, you may have to expand some other objects/collections to find the mesh)
+
+6. Once highlighted on the new mesh AND in the correct collection, look further down the screen from the object list and look for a orange square icon (this will allow for tansformations)
+
+7. Start transformations (for easier clarity when making transformation make sure to click the "eye" icon on any other phone insides objects and borders)
+        For positioning ONLY change the z-axis = 0.29m
+        For rotation again only z-axis needs to be move, and will require different angles depending on the image imported
+        Then stretch the mesh plane to fit the phone case below (if the apect ratio of the phone is really far off consider changing the stretch of the phone case to match the mesh plane instead)
+
+8. Now move over to the "Border" collection and copy/paste one of the boders and rename it to match the newly inserted phone insides
+        The border will then need to be scaled to appropriately fit the phone inside's battery
+
+9. From here the only thing is to start generating images of the new phone insides
+        This can be done by again going over to the sripting tab, scrolling down to the while loop and changing to the desired amount of images, then clicking play at the top of the script panel
