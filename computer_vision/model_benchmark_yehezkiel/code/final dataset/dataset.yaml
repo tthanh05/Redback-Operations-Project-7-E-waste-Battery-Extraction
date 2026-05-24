@@ -1,0 +1,7 @@
+names:
+  0: Battery
+train: images/train
+val: images/val
+test: images/test
+nc: 1
+path: /content/drive/MyDrive/E-waste Battery Extraction CV/final_dataset

@@ -9,7 +9,7 @@
 
 ```bash
 # 1. Clone
-git clone https://github.com/YOUR_USERNAME/Capstone-Redback-Project_7-Computer_Vision.git
+git clone https://github.com/moksh07b/Capstone-Redback-Project_7-Computer_Vision.git
 cd Capstone-Redback-Project_7-Computer_Vision
 
 # 2. Install dependencies
@@ -88,9 +88,13 @@ Capstone-Redback-Project_7-Computer_Vision/
 │   └── makingNewAutomationBlenderFile.md
 │
 ├── scripts/
+│   ├── augment_dataset.py         ← Data augmentation (run once before training)
 │   ├── blenderGenerationScript.py ← Synthetic image generation (Blender)
-│   ├── imgscraper.py              ← YouTube scraper + SAM auto-segmentation
 │   ├── check_dataset.py           ← Image-label matching validation
+│   ├── evaluate_all_metrics.py    ← Full evaluation of all 5 models → CSV
+│   ├── evaluate_ssd_retinanet.py  ← SSD / RetinaNet curve plots
+│   ├── imgscraper.py              ← YouTube scraper + SAM auto-segmentation
+│   ├── visual_compare_all_models.py ← Side-by-side visual comparison of all models
 │   └── YoutubeScraper.md          ← YouTube scraper documentation
 │
 ├── requirements.txt
@@ -107,9 +111,6 @@ Capstone-Redback-Project_7-Computer_Vision/
 The dataset is hosted on Kaggle due to size limitations.
 
 🔗 **Kaggle Dataset:** https://www.kaggle.com/datasets/mokshbansal07/project-7
-
-> ⚠️ The dataset is currently **private**.  
-> To use it: make it public, or add collaborators directly on Kaggle.
 
 The dataset combines **real-world disassembly images** and **Blender-generated synthetic images**.
 
@@ -161,7 +162,7 @@ names:
 ### 1. Clone
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/Capstone-Redback-Project_7-Computer_Vision.git
+git clone https://github.com/moksh07b/Capstone-Redback-Project_7-Computer_Vision.git
 cd Capstone-Redback-Project_7-Computer_Vision
 ```
 
@@ -195,6 +196,21 @@ kaggle datasets download -d mokshbansal07/project-7 -p dataset --unzip
 
 ## 🔧 Scripts
 
+### `augment_dataset.py` — Data Augmentation
+
+Run **once before training** to expand the dataset. For each original image, creates 4 augmented copies with transformed images and correctly updated segmentation polygon labels.
+
+Augmentations applied: horizontal flip, brightness/contrast, hue/saturation, rotation (±15°), scale/translate, Gaussian blur.
+
+> ⚠️ Safe to re-run — automatically skips images already containing `_aug` in the filename.
+
+**Run:**
+```bash
+python scripts/augment_dataset.py
+```
+
+---
+
 ### `blenderGenerationScript.py` — Synthetic Data Generation
 
 Run inside **Blender's Scripting IDE** to generate labelled synthetic phone images.
@@ -211,6 +227,49 @@ The script:
 
 ```text
 # Run from inside Blender → Scripting tab → Open file → Run Script
+```
+
+---
+
+### `check_dataset.py` — Dataset Validation
+
+Validates that every image in the dataset has a matching label file, and flags any orphaned images or labels.
+
+**Run:**
+```bash
+python scripts/check_dataset.py
+```
+
+---
+
+### `evaluate_all_metrics.py` — Full Model Evaluation
+
+Evaluates all 5 models (YOLOv8n, YOLOv26n, YOLOv11x, SSD, RetinaNet) on the test set and produces a single comparison CSV.
+
+**Metrics calculated:** Mask IoU / Box IoU, Average and Median Centroid Error (px), Inference Latency (ms), FPS.
+
+**Output:** `runs/evaluation_results/model_metrics_summary.csv`
+
+> ⚠️ Update the YOLO model folder names inside the script before running — see the comment block above `YOLO_MODELS`.
+
+**Run:**
+```bash
+python scripts/evaluate_all_metrics.py
+```
+
+---
+
+### `evaluate_ssd_retinanet.py` — SSD / RetinaNet Curve Plots
+
+Generates precision, recall, F1, precision-recall curves and confusion matrix for SSD or RetinaNet.
+
+**Output:** 5 `.png` files saved to `runs/evaluation_results/`
+
+> Set `MODEL_TYPE = "ssd"` or `MODEL_TYPE = "retinanet"` at the top of the script before running.
+
+**Run:**
+```bash
+python scripts/evaluate_ssd_retinanet.py
 ```
 
 ---
@@ -243,13 +302,17 @@ python scripts/imgscraper.py
 
 ---
 
-### `check_dataset.py` — Dataset Validation
+### `visual_compare_all_models.py` — Visual Comparison
 
-Validates that every image in the dataset has a matching label file, and flags any orphaned images or labels.
+Randomly samples 5% of test images and generates side-by-side comparison images showing each model's prediction vs the ground truth mask, with IoU and centroid error annotated.
+
+**Output:** Comparison `.png` files saved to `runs/evaluation_results/`
+
+> ⚠️ Update the YOLO model folder names inside the script before running — see the comment block above `YOLO_MODELS`.
 
 **Run:**
 ```bash
-python scripts/check_dataset.py
+python scripts/visual_compare_all_models.py
 ```
 
 ---
@@ -320,13 +383,13 @@ Full quantitative results are available in:
 
 ## 📈 Model Comparison
 
-| Model | mAP@50 | Inference (ms) | Parameters | Notes |
-|---|---|---|---|---|
-| YOLOv8n-seg | 0.99 | 51.75 | 3.4M | Best deployment balance |
-| YOLOv11x-seg | 0.99 | 72.95 | 62.1M | Highest accuracy |
-| YOLO26n-seg | 0.98 | 60.21 | 2.7M | Experimental |
-| RetinaNet | 0.90 | 79.50 | 33M | Baseline detector |
-| SSD | 0.88 | 24.83 | 30M | Lightweight baseline |
+| Model | mAP@50 | Inference (ms) | FPS | Avg Centroid Error (px) | Notes |
+|---|---|---|---|---|---|
+| YOLOv8n-seg | 0.99 | 51.75 | 19.32 | 25.37 | Best deployment balance |
+| YOLOv11x-seg | 0.99 | 72.95 | 13.71 | 41.22 | Highest accuracy |
+| YOLO26n-seg | 0.98 | 60.21 | 16.61 | 34.63 | Experimental |
+| RetinaNet | 0.90–0.97 | 81.98 | 12.20 | 133.77 | Baseline detector |
+| SSD | 0.88–0.96 | 24.83 | 40.28 | 254.48 | Fast but unreliable |
 
 ---
 
@@ -334,14 +397,15 @@ Full quantitative results are available in:
 
 ### ✅ Best for Deployment — YOLOv8n-seg
 
-- Real-time inference speed
-- High segmentation accuracy
-- Low parameter count (efficient on embedded/robotic hardware)
+- Real-time inference speed (19.32 FPS)
+- Lowest centroid error (25.37 px) — most precise robotic targeting
+- Low parameter count (3.4M) — efficient on embedded hardware
 - Proven Ultralytics ecosystem support
 
 ### 🧠 Best for Accuracy — YOLOv11x-seg
 
-- Highest precision and recall
+- Highest precision, recall, and F1 score
+- Best mask quality (Mask IoU: 0.866)
 - Best choice for offline or non-latency-constrained evaluation
 
 ---
@@ -383,6 +447,7 @@ __pycache__/
 ```
 
 ---
+
 
 ## 📄 Documentation
 
