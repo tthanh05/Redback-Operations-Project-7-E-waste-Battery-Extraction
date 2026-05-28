@@ -1,0 +1,25 @@
+About the URDF and Mesh Files
+
+ The UR3 robot model used in this project comes from the official MathWorks support package. The URDF and mesh files are not included in this GitHub repository because:
+
+ 1. They are part of the MATLAB support package installed locally on your machine.
+
+ 2. They are large and not required to run the Simulink model (ur3_model.slx) – the Simulink model already contains the robot’s structure.
+
+ 3. Including them would unnecessarily bloat the repository and may raise licensing concerns.
+
+How to obtain the URDF files (if needed)
+
+If you need to regenerate the Simulink model from scratch or work with the URDF directly:
+
+ 1. In MATLAB, go to Home tab → Add-Ons → Get Hardware Support Packages.
+
+ 2. Search for "Universal Robots UR Series Manipulators" and install it.
+
+ 3. After installation, the URDF files will be located in a folder similar to:
+
+/Users/<your-username>/Documents/MATLAB/SupportPackages/R2025b/toolbox/robotics/supportpackages/robotlibrary/Robots/ur_description/urdf/
+The UR3 file is named universalUR3.urdf.
+
+Follow the steps in the documentation to import the robot into MATLAB and regenerate the Simulink model.
+
